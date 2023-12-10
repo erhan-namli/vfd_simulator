@@ -104,6 +104,9 @@ async def run_async_server(args):
 
     if args.comm == "tcp":
         address = (args.host if args.host else "", args.port if args.port else None)
+
+        print("address", address)
+
         try:
             server = await StartAsyncTcpServer(
                 context=args.context,  # Data storage
@@ -111,6 +114,8 @@ async def run_async_server(args):
                 address=address,  # listen address
                 framer=args.framer,  # The framer strategy to use
             )
+
+            print(address)
 
         except Exception as e:
 
@@ -148,5 +153,6 @@ if __name__ == "__main__":
     # Start the Modbus server in a separate thread
     modbus_thread = Thread(target=lambda: asyncio.run(run_async_server(run_args)))
     modbus_thread.start()
+
     # Start the Flask web server
     socketio.run(app, debug=True, use_reloader=False)

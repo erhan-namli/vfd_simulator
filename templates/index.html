@@ -1,4 +1,5 @@
 <!-- index.html -->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,16 +8,23 @@
     <title>Modbus Server</title>
 </head>
 <body>
-    <h1>Modbus Server Data</h1>
-    <div id="data"></div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.1.3/socket.io.js"></script>
-    <script>
-        var socket = io.connect('http://' + document.domain + ':' + location.port);
+<h1 id="status">Initial Status</h1>
 
-        socket.on('update_data', function(msg) {
-            document.getElementById('data').innerHTML = 'Data: ' + msg.data;
-        });
-    </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.1.3/socket.io.js"></script>
+<script>
+    var socket = io.connect('http://' + document.domain + ':' + location.port);
+    console.log("SAA")
+    // Listen for the 'update_status' event
+    socket.on('update_status', function(data) {
+        var newValue = data.value;
+        console.log("SAA2")
+        // Update the HTML element with the received value
+        document.getElementById('status').innerText = 'New Status: ' + newValue;
+
+        // Add additional logic here if needed
+    });
+</script>
+
 </body>
 </html>
