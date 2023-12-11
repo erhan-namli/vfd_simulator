@@ -8,7 +8,7 @@
 
 ## Software TO-DO
 
-- simple server setup
+- simple server setup [X]
 
 ## Parameters
 

@@ -26,6 +26,10 @@ CORS(app)
 _logger = logging.getLogger(__name__)
 _logger.setLevel(logging.DEBUG)
 
+## STATES
+address_1_state = 0
+
+
 class CallbackDataBlock(ModbusSequentialDataBlock):
     """A datablock that stores the new value in memory,.
     and passes the operation to a message queue for further processing.
@@ -40,13 +44,9 @@ class CallbackDataBlock(ModbusSequentialDataBlock):
         """Set the requested values of the datastore."""
         super().setValues(address, value)
 
-        if(address == 1):
-            print("debug socketio1")
+        print("address", address, "value", value)
 
-            address_changed(1, 5)
-
-        if (address == 2):
-            print("debug socketio2")
+        solve_and_emit(address, value)
 
         txt = f"Callback from setValues with address {address}, value {value}"
         _logger.debug(txt)
@@ -65,31 +65,9 @@ class CallbackDataBlock(ModbusSequentialDataBlock):
         _logger.debug(txt)
         return result
 
-
-def address_changed(address, data):
-
-    if(address==1):
-
-        socketio.emit('update_status', {'value': data})
-        print("address_changed_function")
-
-    pass
-
 @app.route('/')
 def index():
     return render_template('index.html')
-
-@socketio.on('address_1_changed')
-def handle_address_1_change(data):
-    print("Socket func")
-    value = data['value']
-    # Do something with the value when address is 1
-    print(f"Received address_1_changed event with value: {value}")
-
-    # Update the HTML element with the received value
-    socketio.emit('update_status', {'value': value}, broadcast=True)
-
-    # Add your logic here
 
 async def setup_server():
 
@@ -97,7 +75,7 @@ async def setup_server():
 
     #datablock = ModbusSequentialDataBlock(0x00, [16] * 100)
 
-    block = CallbackDataBlock(queue, 0x00, [16] *5)
+    block = CallbackDataBlock(queue, 0x00, [16] *200)
 
     context = ModbusSlaveContext(
         di=block, co=block, hr=block, ir=block
@@ -138,6 +116,30 @@ async def run_server():
     await setup_server()
 
 
+def solve_and_emit(address, value):
+
+    global address_1_state
+
+    print("solve and emit")
+
+    if(address==1 and value == [1]):
+        print("debug1")
+        address_1_state = 1
+
+    if (address == 1 and value == [0]):
+        print("debug1")
+        address_1_state = 0
+        socketio.emit('stop', {'value': value})
+
+    if(address==2 and value == [420]):
+        print("debug2")
+        socketio.emit('forward', {'value': value})
+
+    if (address == 2 and value == [65116]):
+        print("debug2")
+        socketio.emit('backward', {'value': value})
+
+    pass
 
 
 if __name__ == "simple_server":
