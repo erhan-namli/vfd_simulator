@@ -8,7 +8,6 @@ const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 
-console.log("Templates under")
 
 renderer.setPixelRatio( window.devicePixelRatio );
 
@@ -37,12 +36,12 @@ scene.add(base);
 
 camera.position.z = 6;
 
-const shadow = new THREE.TextureLoader().load( 'three/ferrari_ao.png' );
+const shadow = new THREE.TextureLoader().load( 'static/three/ferrari_ao.png' );
 
 // Ferrari Car Model Section
 
 const dracoLoader = new DRACOLoader();
-dracoLoader.setDecoderPath('three/draco/gltf/');
+dracoLoader.setDecoderPath('static/three/draco/gltf/');
 
 
 const loader = new GLTFLoader();
@@ -62,7 +61,7 @@ const glassMaterial = new THREE.MeshPhysicalMaterial( {
 
 const wheels = [];
 
-loader.load( 'models/ferrari.glb', function ( gltf ) {
+loader.load( 'static/models/ferrari.glb', function ( gltf ) {
 
     const carModel = gltf.scene.children[ 0 ];
 
@@ -111,20 +110,61 @@ loader.load( 'models/ferrari.glb', function ( gltf ) {
 const rotateSpeed = 0.005;
 const rotateDirection = 1; // 1 for clockwise, -1 for counterclockwise
 
-var socket = io.connect('http://' + document.domain + ':' + location.port);
-
 const autoRotate = function () {
     base.rotation.z += rotateSpeed * rotateDirection;
 };
 
 
+// WS
+
+var socket = io.connect('http://' + document.domain + ':' + location.port);
+
+socket.on("forward", function(data){
+            rotateTable('forward');
+})
+
+socket.on("stop", function(data){
+            rotateTable('stop');
+})
+
+socket.on("backward", function(data){
+            rotateTable('backward');
+})
+
+let currentRotation = 0;
+let rotationIntervalForward;
+let rotationIntervalBackward;
+function rotateTable(direction){
+
+    if(direction === 'forward'){
+        console.log("FORWARD")
+        rotationIntervalForward = setInterval(function () {
+                currentRotation += Math.PI / 1800
+                base.rotation.z = currentRotation
+    }, 100);
+    }
+
+    if(direction === 'backward'){
+        console.log("BACKWARD")
+        clearInterval(rotationIntervalForward);
+        rotationIntervalBackward = setInterval(function () {
+                currentRotation -= Math.PI / 1800
+                base.rotation.z = currentRotation
+    }, 100);
+    }
+
+    if(direction === 'stop') {
+        console.log("STOP")
+        clearInterval(rotationIntervalForward);
+        clearInterval(rotationIntervalBackward);
+    }
+
+}
+
 const animate = function () {
     requestAnimationFrame(animate);
 
-    autoRotate()
-
-    // Rotate the car
-   // car.rotation.y += 0.01;
+    //autoRotate()
 
     renderer.render(scene, camera);
 };
