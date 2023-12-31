@@ -44,8 +44,6 @@ class CallbackDataBlock(ModbusSequentialDataBlock):
         """Set the requested values of the datastore."""
         super().setValues(address, value)
 
-        print("address", address, "value", value)
-
         solve_and_emit(address, value)
 
         txt = f"Callback from setValues with address {address}, value {value}"
@@ -123,20 +121,20 @@ def solve_and_emit(address, value):
     print("address", address, "value", value)
 
     if(address==1 and value == [1]):
-        print("debug1")
+
         address_1_state = 1
 
     if (address == 1 and value == [0]):
-        print("debug2")
+
         address_1_state = 0
         socketio.emit('stop', {'value': value})
 
     if(address==2 and value == [420]):
-        print("debug3")
+
         socketio.emit('forward', {'value': value})
 
     if (address == 2 and value == [65116]):
-        print("debug4")
+
         socketio.emit('backward', {'value': value})
 
     pass

@@ -37,7 +37,7 @@ scene.add(base);
 
 camera.position.z = 6;
 
-const shadow = new THREE.TextureLoader().load( 'three/ferrari_ao.png' );
+//const shadow = new THREE.TextureLoader().load( 'three/ferrari_ao.png' );
 
 // Ferrari Car Model Section
 
@@ -62,7 +62,7 @@ const glassMaterial = new THREE.MeshPhysicalMaterial( {
 
 const wheels = [];
 
-loader.load( 'models/ferrari.glb', function ( gltf ) {
+loader.load( 'models/mercedes.glb', function ( gltf ) {
 
     const carModel = gltf.scene.children[ 0 ];
 

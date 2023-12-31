@@ -4,7 +4,8 @@
     - UI Implementation
 - Keypad Start Mode Select
 - Motor Animation
-
+- Car change Buttons
+- Camera Set Buttons
 
 ## Software TO-DO
 
