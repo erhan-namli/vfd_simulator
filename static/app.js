@@ -14,6 +14,12 @@ let currentCarModel = 0;
         modbus_disconnect: function() {
             alert("Disconnect");
         },
+        updateModbusConnection: function (newState) {
+            this.modbus_connection = newState;
+            console.log("Modbus Connection updated to:", newState);
+            console.log(this.modbus_connection);
+
+        },
         maxSize: 6.0,
         height: 10,
         noiseStrength: 10.2,
@@ -22,6 +28,8 @@ let currentCarModel = 0;
         car_model : 1,
         camera : 1,
         distance: 1
+
+
     };
 
     var gui = new dat.gui.GUI();
@@ -30,6 +38,12 @@ let currentCarModel = 0;
 
     gui.add(obj, 'message');
     gui.add(obj, 'modbus_connection');
+      /*  .onChange(function () {
+    // Use the updateModbusConnection function with the desired state
+    obj.updateModbusConnection(obj.modbus_connection);
+});*/
+
+
     gui.add(obj, 'modbus_disconnect');
 
     gui.add(obj, 'maxSize').min(-10).max(10).step(0.25);
@@ -44,13 +58,11 @@ let currentCarModel = 0;
 
         let carModel = this.getValue();
 
-        console.log("Parameter is", carModel)
-
         if (carModel == 1) {
-             console.log("Buraya girdi 1")
+
             modelPath = 'static/models/mercedes.glb';
         } else if (carModel == 2) {
-            console.log("Buraya girdi 2")
+
             modelPath = 'static/models/ferrari.glb'; // Replace 'ferrari.glb' with the actual path for the Ferrari model
         }
             console.log(modelPath + "model path");
@@ -83,9 +95,7 @@ let currentCarModel = 0;
             // Update the current car model reference
             carModel = newCarModel;
         });
-
         }
-
     )
 
     var f2 = gui.addFolder('Another Folder');
@@ -105,7 +115,6 @@ let currentCarModel = 0;
     function(){
       let yourVar = this.getValue();
 
-      console.log(yourVar);
     }
   )
 
@@ -137,7 +146,7 @@ spotLight.position.set(0, 25, 0);
 spotLight.castShadow = true;
 spotLight.shadow.bias = -0.0001;
 scene.add(spotLight);
-+
+
 scene.add(base);
 
 camera.position.z = 6;
@@ -188,6 +197,16 @@ const autoRotate = function () {
 
 var socket = io.connect('http://' + document.domain + ':' + location.port);
 
+socket.on('modbus_server_connected', function(data) {
+    console.log("Debug1")
+    modbusServerConnected();
+})
+
+socket.on('modbus_server_disconnected', function(data) {
+    console.log("Debug1")
+    modbusServerDisconnected();
+})
+
 socket.on("forward", function(data){
             rotateTable('forward');
 })
@@ -205,6 +224,17 @@ let rotationIntervalBackward;
 
 function rotateTabletoDegree(degree){
 
+}
+
+function modbusServerConnected(){
+    obj.updateModbusConnection(true);
+    gui.updateDisplay();
+
+}
+
+function modbusServerDisconnected() {
+     obj.updateModbusConnection(false);
+     gui.updateDisplay();
 }
 
 function rotateTable(direction){

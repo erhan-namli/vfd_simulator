@@ -115,7 +115,7 @@ async def run_async_server(args):
                 framer=args.framer,  # The framer strategy to use
             )
 
-            print(address)
+
 
         except Exception as e:
 

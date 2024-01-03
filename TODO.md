@@ -3,8 +3,9 @@
 - Connection check
     - UI Implementation
 - Keypad Start Mode Select
-- Motor Animation
-- Car change Buttons
+- Car model change GUI elements [x]
+  - algo setup [X]
+  - correction [X]
 - Camera Set Buttons
 
 ## Software TO-DO

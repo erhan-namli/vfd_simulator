@@ -29,7 +29,6 @@ _logger.setLevel(logging.DEBUG)
 ## STATES
 address_1_state = 0
 
-
 class CallbackDataBlock(ModbusSequentialDataBlock):
     """A datablock that stores the new value in memory,.
     and passes the operation to a message queue for further processing.
@@ -71,8 +70,6 @@ async def setup_server():
 
     queue = asyncio.Queue()
 
-    #datablock = ModbusSequentialDataBlock(0x00, [16] * 100)
-
     block = CallbackDataBlock(queue, 0x00, [16] *200)
 
     context = ModbusSlaveContext(
@@ -113,32 +110,33 @@ async def run_server():
 
     await setup_server()
 
-
 def solve_and_emit(address, value):
 
     global address_1_state
 
     print("address", address, "value", value)
 
-    if(address==1 and value == [1]):
+    if(address == 140 and value == [3]):
 
+        socketio.emit('modbus_server_connected')
+
+    if(address == 140 and value == [0]):
+      
+        socketio.emit('modbus_server_disconnected')
+
+    if(address==1 and value == [1]):
         address_1_state = 1
 
     if (address == 1 and value == [0]):
-
         address_1_state = 0
         socketio.emit('stop', {'value': value})
 
     if(address==2 and value == [420]):
-
         socketio.emit('forward', {'value': value})
 
     if (address == 2 and value == [65116]):
-
         socketio.emit('backward', {'value': value})
-
     pass
-
 
 if __name__ == "simple_server":
 
