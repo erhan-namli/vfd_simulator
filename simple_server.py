@@ -138,7 +138,7 @@ def solve_and_emit(address, value):
         socketio.emit('backward', {'value': value})
     pass
 
-if __name__ == "simple_server":
+if __name__ == "__main__":
 
     print("debug ", __name__)
 
