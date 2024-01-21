@@ -8,7 +8,7 @@ let modelPath = 'static/models/mercedes.glb';
 let currentCarModel = 0;
 
 // GUI
-  var obj = {
+var obj = {
         message: 'Hello World',
         modbus_connection: false,
         modbus_disconnect: function() {
@@ -188,6 +188,8 @@ loader.load( modelPath, function ( gltf ) {
 // Automatic rotation for testing
 const rotateSpeed = 0.005;
 const rotateDirection = 1; // 1 for clockwise, -1 for counterclockwise
+let cal_data_forward = 1
+let cal_data_backward = 1
 
 const autoRotate = function () {
     base.rotation.z += rotateSpeed * rotateDirection;
@@ -209,6 +211,8 @@ socket.on('modbus_server_disconnected', function(data) {
 
 socket.on("forward", function(data){
             rotateTable('forward');
+
+            cal_data_forward = data.cal_data_forward
 })
 socket.on("stop", function(data){
             rotateTable('stop');
@@ -216,6 +220,8 @@ socket.on("stop", function(data){
 
 socket.on("backward", function(data){
             rotateTable('backward');
+
+            cal_data_backward = data.cal_data_backward
 })
 
 let currentRotation = 0;
@@ -245,7 +251,7 @@ function rotateTable(direction){
     if(direction === 'forward'){
 
         rotationIntervalForward = setInterval(function () {
-                currentRotation += Math.PI / 1800
+                currentRotation += Math.PI / 1800 / cal_data_forward
                 base.rotation.z = currentRotation
     }, 100);
     }
@@ -254,7 +260,7 @@ function rotateTable(direction){
 
         clearInterval(rotationIntervalForward);
         rotationIntervalBackward = setInterval(function () {
-                currentRotation -= Math.PI / 1800
+                currentRotation -= Math.PI / 1800 / cal_data_backward
                 base.rotation.z = currentRotation
     }, 100);
 
