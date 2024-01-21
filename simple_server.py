@@ -199,7 +199,7 @@ def solve_and_emit(address, value):
     if (address == 2 and value == [65116]):
         socketio.emit('backward', {'value': value, 'cal_data_backward': int(cal_data_backward)})
 
-if __name__ == "simple_server":
+if __name__ == "__main__":
 
     print("debug ", __name__)
 
