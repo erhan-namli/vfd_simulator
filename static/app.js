@@ -213,6 +213,7 @@ socket.on("forward", function(data){
             rotateTable('forward');
 
             cal_data_forward = data.cal_data_forward
+        console.log(cal_data_forward)
 })
 socket.on("stop", function(data){
             rotateTable('stop');

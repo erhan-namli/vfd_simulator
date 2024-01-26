@@ -194,10 +194,10 @@ def solve_and_emit(address, value):
         socketio.emit('stop')
 
     if(address==2 and value == [420]):
-        socketio.emit('forward', {'value': value, 'cal_data_forward': int(cal_data_forward)})
+        socketio.emit('forward', {'value': value, 'cal_data_forward': float(cal_data_forward)})
 
     if (address == 2 and value == [65116]):
-        socketio.emit('backward', {'value': value, 'cal_data_backward': int(cal_data_backward)})
+        socketio.emit('backward', {'value': value, 'cal_data_backward': float(cal_data_backward)})
 
 if __name__ == "__main__":
 
